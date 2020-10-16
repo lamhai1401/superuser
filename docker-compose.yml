@@ -11,10 +11,10 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_USER: username
       MYSQL_PASSWORD: password
-      MYSQL_DATABASE: asynctest
+      MYSQL_DATABASE: superuser
     healthcheck:
       test: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
     ports:
       - '3306:3306'
-    container_name: mysql
+    container_name: superuser
     tty: true
