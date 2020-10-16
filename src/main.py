@@ -1,3 +1,4 @@
+from .api import router
 from fastapi import FastAPI, Depends
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -34,3 +35,6 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+#  this imports the route in the user into the main file
+app.include_router(router, prefix=API_PREFIX)
