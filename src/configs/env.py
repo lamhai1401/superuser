@@ -21,7 +21,12 @@ USER: str = os.getenv("USER") or config("USER", cast=str, default="username")
 PWD: str = os.getenv("PWD") or config("PWD", cast=str, default="password")
 DB: str = os.getenv("DB") or config("DB", cast=str, default="db")
 
-SECRET_KEY: Secret = config("SECRET_KEY", cast=Secret)
+# auth
+SECRET_KEY: Secret = os.getenv("SECRET_KEY") or config("SECRET_KEY", cast=Secret)
+ALGORITHM: str = os.getenv("ALGORITHM") or config("ALGORITHM", cast=str, default="HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")) or config("ACCESS_TOKEN_EXPIRE_MINUTES", cast=int, default=30)
+
+# project info
 PROJECT_NAME: str = config(
     "PROJECT_NAME",
     default="FastAPI example application"
