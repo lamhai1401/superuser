@@ -3,7 +3,7 @@ from tortoise import Tortoise
 from src.configs.env import DATABASE_URL, HOST, PORT, DB, PWD, USER
 from fastapi import FastAPI
 from loguru import logger
-from tortoise.contrib.fastapi import register_tortoise
+# from tortoise.contrib.fastapi import register_tortoise
 
 # Config DB
 TORTOISE_ORM = {

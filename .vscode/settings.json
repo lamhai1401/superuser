@@ -1,5 +1,5 @@
 {
-    // "python.envFile":	"${workspaceFolder}/venv",
+    "python.envFile":	"${workspaceFolder}/.venv",
     "python.venvPath": "/Users/lamhai/python/superuser/.venv",
     "python.formatting.autopep8Path": "/Users/lamhai/python/superuser/.venv/bin/pep8",
     "python.linting.pylintPath": "/Users/lamhai/python/superuser/.venv/bin/pylint",
