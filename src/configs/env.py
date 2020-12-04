@@ -14,12 +14,12 @@ config = Config(".env")
 DEBUG: bool = config("DEBUG", cast=bool, default=False)
 
 # db config
-DATABASE_URL: str = os.getenv("DB_CONNECTION") or config("DB_CONNECTION", cast=str)  # noqa: E501
-HOST: str = os.getenv("HOST") or config("HOST", cast=str, default="127.0.0.1")  # noqa: E501
+DATABASE_URL: str = config("DB_CONNECTION", cast=str) or os.getenv("DB_CONNECTION")  # noqa: E501
+HOST: str = config("HOST", cast=str, default="127.0.0.1") or os.getenv("HOST")  # noqa: E501
 PORT: int = int(os.getenv("PORT")) if "PORT" in os.environ else config("PORT", cast=int, default=3306)  # noqa: E501
-USER: str = os.getenv("USER") or config("USER", cast=str, default="username")
-PWD: str = os.getenv("PWD") or config("PWD", cast=str, default="password")
-DB: str = os.getenv("DB") or config("DB", cast=str, default="db")
+USER: str = config("USER", cast=str, default="username") or os.getenv("USER")
+PWD: str = config("PWD", cast=str, default="password") or os.getenv("PWD")
+DB: str = config("DB", cast=str, default="db") or os.getenv("DB")
 
 # auth
 SECRET_KEY: Secret = os.getenv("SECRET_KEY") or config("SECRET_KEY", cast=Secret)
