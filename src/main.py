@@ -9,6 +9,9 @@ from src.configs.event import create_start_app_handler, create_end_app_handler
 from src.configs.env import API_PREFIX
 from src.api.errors.http_error import http_error_handler
 from src.api.errors.validation_error import http422_error_handler
+from pydantic import BaseModel
+from src.worker import add
+
 
 # CORS
 origins = [
@@ -37,6 +40,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Use pydantic to keep track of the input request payload
+class Numbers(BaseModel):
+    x: float
+    y: float
+
+
+@app.post('/add')
+def enqueue_add(n: Numbers):
+    # We use celery delay method in order to enqueue the task with the given parameters
+    add.delay(n.x, n.y)
 
 
 @app.get("/")

@@ -52,10 +52,18 @@ services:
     - REDIS_REPLICATION_MODE=master  
     container_name: redis-server
     tty: true
+    networks:
+      - shared
   
-  # worker:
-  #   image: celery_simple:latest
-  #   entrypoint: celery worker --app=worker.celery_app -c 2 --loglevel=info
+  worker:
+    restart: always
+    depends_on:
+      - rabbit
+      - redis
+    image: celery_simple:latest
+    entrypoint: celery --app=src.worker.celery_app worker -c 2 --loglevel=info
+    networks:
+      - shared
 
 networks:
   shared: 
