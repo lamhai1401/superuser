@@ -4,3 +4,4 @@ venv
 *.pyc
 *.god
 *.pi
+mysql

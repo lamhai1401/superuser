@@ -1,10 +1,13 @@
 # Use root/example as user/password credentials docker-compose -f stack.yml up docker-compose exec db /bin/bash
-version: '3.3'
+version: '3.6'
 services:
   db:
     image: mysql
+    container_name: superuser
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    # volumes:
+    #   - ./mysql:/var/lib/mysql
     environment:
       MYSQL_HOST: 'db'
       MYSQL_ROOT_HOST: 127.0.0.1
@@ -16,9 +19,27 @@ services:
       test: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
     ports:
       - '3306:3306'
-    container_name: superuser
+    expose:
+      - 3306
     tty: true
-
+    networks:
+      - shared
+  
+  rabbit:
+    image: rabbitmq:latest
+    restart: always
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    ports:
+      - '15672:15672'
+    expose:
+      - 15672
+    networks:
+      - shared
+  
   redis:
     image: "redis:alpine"
     command: redis-server --requirepass sOmE_sEcUrE_pAsS
@@ -31,5 +52,43 @@ services:
     - REDIS_REPLICATION_MODE=master  
     container_name: redis-server
     tty: true
+  
+  # worker:
+  #   image: celery_simple:latest
+  #   entrypoint: celery worker --app=worker.celery_app -c 2 --loglevel=info
 
+networks:
+  shared: 
+    driver: bridge
+    external: true
+  
+  # fastapi:
+  #   build: ./my_super_app
+  #   depends_on:
+  #     - db
+  #   restart: always
+  #   image: celery_simple:latest
+  #   environment:
+  #     DEBUG: "True"
+  #     DB_CONNECTION: "mysql://username:password@127.0.0.1:3306/superuser"
+  #     HOST: "127.0.0.1"
+  #     PORT: "3306"
+  #     USER: "username"
+  #     PWD: "password"
+  #     DB: "superuser"
+  #     SECRET_KEY : "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+  #     ALGORITHM : "HS256"
+  #     ACCESS_TOKEN_EXPIRE_MINUTE : "30"
+  #   ports:
+  #     - 8080:8080
+  #   command: sh -c "/wait && /code"
+  #   # entrypoint: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+  #   networks:
+  #     - shared
 
+# networks:
+#   shared: 
+#     external:
+#       name: shared
+
+# docker network create shared
