@@ -49,9 +49,10 @@ class Numbers(BaseModel):
 
 
 @app.post('/add')
-def enqueue_add(n: Numbers):
+async def enqueue_add(n: Numbers):
     # We use celery delay method in order to enqueue the task with the given parameters
     add.delay(n.x, n.y)
+    # print(add.ready())
 
 
 @app.get("/")
