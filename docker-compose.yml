@@ -34,7 +34,10 @@ services:
         timeout: 10s
         retries: 5
     ports:
-      - '15672:15672'
+      - "4369:4369"
+      - "5672:5672"
+      - "25672:25672"
+      - "15672:15672"
     expose:
       - 15672
     networks:
@@ -42,7 +45,7 @@ services:
   
   redis:
     image: "redis:alpine"
-    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    command: redis-server --requirepass password123
     ports:
     - "6379:6379"
     volumes:
@@ -61,7 +64,7 @@ services:
       - rabbit
       - redis
     image: celery_simple:latest
-    entrypoint: celery --app=src.worker.celery_app worker -c 2 --loglevel=info
+    command: celery --app=src.worker worker -c 2 --loglevel=DEBUG
     networks:
       - shared
 
