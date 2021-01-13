@@ -40,6 +40,9 @@ services:
       - "15672:15672"
     expose:
       - 15672
+      - 5672
+      - 4369
+      - 25672
     networks:
       - shared
   
@@ -48,9 +51,9 @@ services:
     command: redis-server --requirepass password123
     ports:
     - "6379:6379"
-    volumes:
-    - $PWD/redis-data:/var/lib/redis
-    - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    # volumes:
+    # - $PWD/redis-data:/var/lib/redis
+    # - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
     - REDIS_REPLICATION_MODE=master  
     container_name: redis-server
@@ -58,15 +61,15 @@ services:
     networks:
       - shared
   
-  worker:
-    restart: always
-    depends_on:
-      - rabbit
-      - redis
-    image: celery_simple:latest
-    command: celery --app=src.worker worker -c 2 --loglevel=DEBUG
-    networks:
-      - shared
+  # worker:
+  #   restart: always
+  #   depends_on:
+  #     - rabbit
+  #     - redis
+  #   image: celery_simple:latest
+  #   command: celery --app=src.worker worker -c 2 --loglevel=DEBUG
+  #   networks:
+  #     - shared
 
 networks:
   shared: 
@@ -96,10 +99,5 @@ networks:
   #   # entrypoint: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
   #   networks:
   #     - shared
-
-# networks:
-#   shared: 
-#     external:
-#       name: shared
 
 # docker network create shared
